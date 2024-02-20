@@ -1,6 +1,7 @@
 import express from "express";
 import "express-async-errors";
 import { json } from "body-parser";
+import "dotenv/config";
 
 import { testRouter } from "./routes";
 
