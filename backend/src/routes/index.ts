@@ -1,3 +1,5 @@
-import { testRouter } from "./test";
+import { getHotelsRouter } from "./get-hotels";
+import { bookHotelRouter } from "./book-hotel";
+import { getSingleHotelRouter } from "./get-single-hotel";
 
-export { testRouter };
+export { getHotelsRouter, bookHotelRouter, getSingleHotelRouter };
