@@ -5,10 +5,21 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
+import GuestsMenu from "./GuestsMenu";
 
 interface City {
   label: string;
 }
+
+const cities: City[] = [
+  { label: "New York City" },
+  { label: "San Francisco" },
+  { label: "Warsaw" },
+  { label: "Miami" },
+  { label: "Berlin" },
+  { label: "Munich" },
+  { label: "Minsk" },
+];
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   marginTop: theme.spacing(2),
@@ -19,15 +30,6 @@ const StyledContainer = styled(Container)(({ theme }) => ({
 }));
 
 export const GlobalSearch: React.FC = () => {
-  // Example data for autocomplete options
-  const cities: City[] = [
-    { label: "New York City" },
-    { label: "Los Angeles" },
-    { label: "San Francisco" },
-    { label: "Chicago" },
-    { label: "Miami" },
-  ];
-
   return (
     <StyledContainer maxWidth="lg">
       <Stack
@@ -41,9 +43,7 @@ export const GlobalSearch: React.FC = () => {
           id="search-hotels-input"
           options={cities}
           sx={{ width: 300 }}
-          renderInput={(params) => (
-            <TextField {...params} label="Destination" />
-          )}
+          renderInput={(params) => <TextField {...params} label="Location" />}
         />
         <TextField
           id="check-in-date"
@@ -63,6 +63,7 @@ export const GlobalSearch: React.FC = () => {
             shrink: true,
           }}
         />
+        <GuestsMenu />
         <Button variant="contained" color="primary">
           Search
         </Button>
