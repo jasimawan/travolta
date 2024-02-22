@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo, useState } from "react";
+import React, { memo, useCallback, useState } from "react";
 import styled from "@mui/material/styles/styled";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
@@ -6,15 +6,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import { useGuests } from "../selectors/globalSearchSelectors";
-
-interface Guests {
-  adults: number;
-  children: number;
-  infants: number;
-  pets: number;
-}
-
-type GuestType = keyof Guests;
+import { GuestType } from "../context/GlobalSearchContext";
 
 const StyledContainer = styled(Container)(() => ({
   display: "flex",
@@ -32,13 +24,8 @@ const StyledBox = styled(Box)(() => ({
 }));
 
 const GuestsMenu: React.FC = () => {
-  const { guests, setGuests } = useGuests();
+  const { guests, setGuests, totalGuests } = useGuests();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-  const totalGuests = useMemo(
-    () => Object.values(guests).reduce((acc, val) => acc + val, 0),
-    [guests]
-  );
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);

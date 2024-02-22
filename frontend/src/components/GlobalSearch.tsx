@@ -6,19 +6,22 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
 import GuestsMenu from "./GuestsMenu";
+import {
+  useCheckin,
+  useCheckout,
+  useGuests,
+  useLocation,
+} from "../selectors/globalSearchSelectors";
+import DatePicker from "./DatePicker";
 
-interface City {
-  label: string;
-}
-
-const cities: City[] = [
-  { label: "New York City" },
-  { label: "San Francisco" },
-  { label: "Warsaw" },
-  { label: "Miami" },
-  { label: "Berlin" },
-  { label: "Munich" },
-  { label: "Minsk" },
+const cities: string[] = [
+  "New York City",
+  "San Francisco",
+  "Warsaw",
+  "Miami",
+  "Berlin",
+  "Munich",
+  "Minsk",
 ];
 
 const StyledContainer = styled(Container)(({ theme }) => ({
@@ -29,7 +32,42 @@ const StyledContainer = styled(Container)(({ theme }) => ({
   padding: `${theme.spacing(1.5)} 0`,
 }));
 
-export const GlobalSearch: React.FC = () => {
+type Props = {
+  onSearchHotels: () => void;
+};
+
+export const GlobalSearch: React.FC<Props> = ({ onSearchHotels }) => {
+  const { location, setLocation } = useLocation();
+  const { checkin, setCheckin } = useCheckin();
+  const { checkout, setCheckout } = useCheckout();
+  const { totalGuests, guests } = useGuests();
+
+  const isSearchDisabled =
+    location === "" || checkin === "" || checkout === "" || totalGuests === 0;
+
+  const handleSetLocation = (
+    _: React.SyntheticEvent<Element, Event>,
+    value: string | null
+  ) => {
+    if (!value) {
+      return;
+    }
+    setLocation(value);
+  };
+
+  const handleSearch = () => {
+    const guestsQueryString = Object.entries(guests)
+      .filter(([, value]) => value !== 0)
+      .map(([key, value]) => `${key}=${value}`)
+      .join("&");
+
+    const queryString = `?location=${location}&checkin=${checkin}&checkout=${checkout}&${guestsQueryString}&page=${1}`;
+
+    const newUrl = `${window.location.origin}/search${queryString}`;
+    window.history.pushState({}, "", newUrl);
+    onSearchHotels();
+  };
+
   return (
     <StyledContainer maxWidth="lg">
       <Stack
@@ -42,29 +80,30 @@ export const GlobalSearch: React.FC = () => {
           disablePortal
           id="search-hotels-input"
           options={cities}
+          value={location || null}
           sx={{ width: 300 }}
           renderInput={(params) => <TextField {...params} label="Location" />}
+          onChange={handleSetLocation}
         />
-        <TextField
-          id="check-in-date"
+        <DatePicker
           label="Check-in"
-          type="date"
-          defaultValue="2024-02-20"
-          InputLabelProps={{
-            shrink: true,
-          }}
+          date={checkin}
+          dateLimit={new Date().toDateString()}
+          onDateChange={setCheckin}
         />
-        <TextField
-          id="check-out-date"
+        <DatePicker
           label="Check-out"
-          type="date"
-          defaultValue="2024-02-22"
-          InputLabelProps={{
-            shrink: true,
-          }}
+          date={checkout}
+          dateLimit={checkin}
+          onDateChange={setCheckout}
         />
         <GuestsMenu />
-        <Button variant="contained" color="primary">
+        <Button
+          variant="contained"
+          color="primary"
+          disabled={isSearchDisabled}
+          onClick={handleSearch}
+        >
           Search
         </Button>
       </Stack>
