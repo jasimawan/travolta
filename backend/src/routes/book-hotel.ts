@@ -21,7 +21,9 @@ router.post(
 
     cache.put(id, req.body, CACHE_DURATION);
 
-    res.status(201).send({ message: "Hotel booked successfully." });
+    res
+      .status(201)
+      .send({ message: "Hotel booked successfully.", success: true });
   }
 );
 

@@ -1,13 +1,16 @@
 import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
-import CardMedia from "@mui/material/CardMedia";
-import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Container from "@mui/system/Container";
 import CircularProgress from "@mui/material/CircularProgress";
 import styled from "@mui/material/styles/styled";
 import { Hotel } from "../types";
+import HotelItem from "./HotelItem";
+import { useCallback, useState } from "react";
+import HotelDetailsModal from "./HotelDetailsModal";
+import useSWRMutation from "swr/mutation";
+import useFetcher from "../hooks/useFetcher";
+import { useSnackbar } from "../context/SnackbarProvider";
 
 const StyledBox = styled(Box)(() => ({
   marginTop: "12px",
@@ -22,6 +25,41 @@ const HotelList = ({
   isLoading: boolean;
   hotels: Hotel[];
 }) => {
+  const { openSnackbar } = useSnackbar();
+  const [selectedHotel, setSelectedHotel] = useState<Hotel | undefined>();
+  const { mutator } = useFetcher();
+  const { trigger, isMutating } = useSWRMutation(
+    `${process.env.REACT_BACKEND_URL}/hotels`,
+    mutator
+  );
+
+  const handleClose = () => {
+    setSelectedHotel(undefined);
+  };
+
+  const handleOpen = (hotel: Hotel) => {
+    setSelectedHotel(hotel);
+  };
+
+  const handleBookHotel = useCallback(
+    async (hotel?: Hotel) => {
+      if (!hotel) {
+        return;
+      }
+      const response = await trigger(hotel);
+      if (!response.success) {
+        openSnackbar({
+          message: response.errors[0].message,
+          severity: "error",
+        });
+        return;
+      }
+      openSnackbar({ message: response.message, severity: "success" });
+      setSelectedHotel(undefined);
+    },
+    [openSnackbar, setSelectedHotel, trigger]
+  );
+
   if (hotels.length === 0 && !isLoading) {
     return (
       <StyledBox>
@@ -33,45 +71,28 @@ const HotelList = ({
   }
 
   return (
-    <StyledBox>
-      <Container>
-        {isLoading ? (
-          <CircularProgress />
-        ) : (
-          <Grid container spacing={2}>
-            {hotels.map((hotel) => (
-              <Grid item key={hotel.id} xs={12} sm={6} md={4}>
-                <Card sx={{ height: "100%" }}>
-                  <CardMedia
-                    component="img"
-                    height="200"
-                    image={hotel.images[0]}
-                    alt={hotel.name}
-                  />
-                  <CardContent>
-                    <Typography variant="h6" component="div">
-                      {hotel.name}
-                    </Typography>
-                    <Typography color="textSecondary">
-                      {hotel.address}
-                    </Typography>
-                    <Typography variant="body2">
-                      {`Rate per day: $${hotel.price.rate}`}
-                    </Typography>
-                    <Typography variant="body2">
-                      {`Total price: $${hotel.price.total}`}
-                    </Typography>
-                    <Typography variant="body2">
-                      {`Rating: ${hotel.rating} (${hotel.reviewsCount})`}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        )}
-      </Container>
-    </StyledBox>
+    <>
+      <StyledBox>
+        <Container>
+          {isLoading ? (
+            <CircularProgress />
+          ) : (
+            <Grid container spacing={2}>
+              {hotels.map((hotel) => (
+                <HotelItem key={hotel.id} hotel={hotel} onOpen={handleOpen} />
+              ))}
+            </Grid>
+          )}
+        </Container>
+      </StyledBox>
+      <HotelDetailsModal
+        open={!!selectedHotel}
+        onClose={handleClose}
+        hotel={selectedHotel}
+        onBookHotel={handleBookHotel}
+        isBooking={isMutating}
+      />
+    </>
   );
 };
 

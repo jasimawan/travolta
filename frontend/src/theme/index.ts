@@ -10,4 +10,17 @@ export const theme = createTheme({
       main: "#FF385C",
     },
   },
+  components: {
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          cursor: "pointer",
+          "&:hover": {
+            outline: "2px solid #FF385C",
+            boxShadow: "0 5px 12px rgb(0 0 0 / 0.5)",
+          },
+        },
+      },
+    },
+  },
 });
