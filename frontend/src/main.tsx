@@ -5,13 +5,16 @@ import "./index.css";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "./theme/index.ts";
 import { GlobalSearchProvider } from "./context/GlobalSearchContext.tsx";
+import SnackbarProvider from "./context/SnackbarProvider.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <GlobalSearchProvider>
-        <App />
-      </GlobalSearchProvider>
+      <SnackbarProvider>
+        <GlobalSearchProvider>
+          <App />
+        </GlobalSearchProvider>
+      </SnackbarProvider>
     </ThemeProvider>
   </React.StrictMode>
 );

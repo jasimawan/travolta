@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import { useGuests } from "../selectors/globalSearchSelectors";
-import { GuestType } from "../context/GlobalSearchContext";
+import { GuestType } from "../types";
 
 const StyledContainer = styled(Container)(() => ({
   display: "flex",

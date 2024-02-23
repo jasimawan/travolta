@@ -1,5 +1,6 @@
 import { useMemo } from "react";
-import { useGlobalSearchContext, Guests } from "../context/GlobalSearchContext";
+import { useGlobalSearchContext } from "../context/GlobalSearchContext";
+import { Guests } from "../types";
 
 export const useLocation = () => {
   const { globalSearch, setGlobalSearch } = useGlobalSearchContext();

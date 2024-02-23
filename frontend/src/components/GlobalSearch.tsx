@@ -11,6 +11,7 @@ import {
   useCheckout,
   useGuests,
   useLocation,
+  usePage,
 } from "../selectors/globalSearchSelectors";
 import DatePicker from "./DatePicker";
 
@@ -41,6 +42,7 @@ export const GlobalSearch: React.FC<Props> = ({ onSearchHotels }) => {
   const { checkin, setCheckin } = useCheckin();
   const { checkout, setCheckout } = useCheckout();
   const { totalGuests, guests } = useGuests();
+  const { page } = usePage();
 
   const isSearchDisabled =
     location === "" || checkin === "" || checkout === "" || totalGuests === 0;
@@ -61,7 +63,7 @@ export const GlobalSearch: React.FC<Props> = ({ onSearchHotels }) => {
       .map(([key, value]) => `${key}=${value}`)
       .join("&");
 
-    const queryString = `?location=${location}&checkin=${checkin}&checkout=${checkout}&${guestsQueryString}&page=${1}`;
+    const queryString = `?location=${location}&checkin=${checkin}&checkout=${checkout}&${guestsQueryString}&page=${page}`;
 
     const newUrl = `${window.location.origin}/search${queryString}`;
     window.history.pushState({}, "", newUrl);

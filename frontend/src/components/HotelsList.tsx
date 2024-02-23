@@ -7,81 +7,22 @@ import Box from "@mui/material/Box";
 import Container from "@mui/system/Container";
 import CircularProgress from "@mui/material/CircularProgress";
 import styled from "@mui/material/styles/styled";
-
-const hotels = [
-  {
-    id: 1,
-    name: "Hotel A",
-    image: "https://via.placeholder.com/150",
-    location: "City A",
-    price: "$100",
-  },
-  {
-    id: 2,
-    name: "Hotel B",
-    image: "https://via.placeholder.com/150",
-    location: "City B",
-    price: "$120",
-  },
-  {
-    id: 3,
-    name: "Hotel C",
-    image: "https://via.placeholder.com/150",
-    location: "City C",
-    price: "$150",
-  },
-  {
-    id: 1,
-    name: "Hotel A",
-    image: "https://via.placeholder.com/150",
-    location: "City A",
-    price: "$100",
-  },
-  {
-    id: 2,
-    name: "Hotel B",
-    image: "https://via.placeholder.com/150",
-    location: "City B",
-    price: "$120",
-  },
-  {
-    id: 3,
-    name: "Hotel C",
-    image: "https://via.placeholder.com/150",
-    location: "City C",
-    price: "$150",
-  },
-  {
-    id: 1,
-    name: "Hotel A",
-    image: "https://via.placeholder.com/150",
-    location: "City A",
-    price: "$100",
-  },
-  {
-    id: 2,
-    name: "Hotel B",
-    image: "https://via.placeholder.com/150",
-    location: "City B",
-    price: "$120",
-  },
-  {
-    id: 3,
-    name: "Hotel C",
-    image: "https://via.placeholder.com/150",
-    location: "City C",
-    price: "$150",
-  },
-];
+import { Hotel } from "../types";
 
 const StyledBox = styled(Box)(() => ({
-  marginTop: "24px",
+  marginTop: "12px",
   overflowY: "scroll",
   height: "100%",
 }));
 
-const HotelList = ({ isLoading, data }: { isLoading: boolean; data: any }) => {
-  if (!data && !isLoading) {
+const HotelList = ({
+  isLoading,
+  hotels,
+}: {
+  isLoading: boolean;
+  hotels: Hotel[];
+}) => {
+  if (hotels.length === 0 && !isLoading) {
     return (
       <StyledBox>
         <Container>
@@ -100,11 +41,11 @@ const HotelList = ({ isLoading, data }: { isLoading: boolean; data: any }) => {
           <Grid container spacing={2}>
             {hotels.map((hotel) => (
               <Grid item key={hotel.id} xs={12} sm={6} md={4}>
-                <Card>
+                <Card sx={{ height: "100%" }}>
                   <CardMedia
                     component="img"
                     height="200"
-                    image={hotel.image}
+                    image={hotel.images[0]}
                     alt={hotel.name}
                   />
                   <CardContent>
@@ -112,10 +53,16 @@ const HotelList = ({ isLoading, data }: { isLoading: boolean; data: any }) => {
                       {hotel.name}
                     </Typography>
                     <Typography color="textSecondary">
-                      {hotel.location}
+                      {hotel.address}
                     </Typography>
                     <Typography variant="body2">
-                      Price: {hotel.price}
+                      {`Rate per day: $${hotel.price.rate}`}
+                    </Typography>
+                    <Typography variant="body2">
+                      {`Total price: $${hotel.price.total}`}
+                    </Typography>
+                    <Typography variant="body2">
+                      {`Rating: ${hotel.rating} (${hotel.reviewsCount})`}
                     </Typography>
                   </CardContent>
                 </Card>

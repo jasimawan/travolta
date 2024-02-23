@@ -1,21 +1,5 @@
 import React, { FC, createContext, useContext, useMemo, useState } from "react";
-
-export interface Guests {
-  adults: number;
-  children: number;
-  infants: number;
-  pets: number;
-}
-
-export type GuestType = keyof Guests;
-
-export interface IGlobalSearch {
-  location: string;
-  checkin: string;
-  checkout: string;
-  guests: Guests;
-  page: number;
-}
+import { IGlobalSearch } from "../types";
 
 interface GlobalSearchContextType {
   globalSearch: IGlobalSearch;
@@ -33,7 +17,7 @@ export const GlobalSearchProvider: FC<React.PropsWithChildren<unknown>> = ({
     location: "",
     checkin: "",
     checkout: "",
-    page: 0,
+    page: 1,
     guests: { adults: 0, children: 0, infants: 0, pets: 0 },
   });
 

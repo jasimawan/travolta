@@ -1,14 +1,16 @@
 import Box from "@mui/material/Box";
 import MainAppBar from "./components/Appbar";
 import { GlobalSearch } from "./components/GlobalSearch";
-import {
-  IGlobalSearch,
-  useGlobalSearchContext,
-} from "./context/GlobalSearchContext";
+import { useGlobalSearchContext } from "./context/GlobalSearchContext";
 import { useCallback, useEffect } from "react";
 import useSWR from "swr";
 import HotelList from "./components/HotelsList";
 import styled from "@mui/material/styles/styled";
+import { Hotel, IGlobalSearch } from "./types";
+import useFetcher from "./hooks/useFetcher";
+import Stack from "@mui/material/Stack";
+import Pagination from "@mui/material/Pagination";
+import { usePage } from "./selectors/globalSearchSelectors";
 
 const StyledBox = styled(Box)(() => ({
   height: "100vh",
@@ -16,17 +18,19 @@ const StyledBox = styled(Box)(() => ({
   flexDirection: "column",
 }));
 
-const fetcher = async (url: string) => {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error("Failed to fetch data");
-  }
-  return response.json();
-};
+const StyledStack = styled(Stack)(({ theme }) => ({
+  backgroundColor: theme.palette.grey[300],
+}));
 
 function App() {
   const { setGlobalSearch } = useGlobalSearchContext();
-  const { isLoading, mutate, data } = useSWR(
+  const { page: globalPage, setPage } = usePage();
+  const { fetcher } = useFetcher();
+  const {
+    isLoading,
+    mutate,
+    data: hotels,
+  } = useSWR(
     `${process.env.REACT_BACKEND_URL}/hotels/${window.location.search}`,
     fetcher,
     {
@@ -35,30 +39,26 @@ function App() {
       refreshWhenHidden: false,
       refreshWhenOffline: false,
       revalidateOnMount: false,
+      errorRetryCount: 1,
     }
   );
 
   const handleSearch = useCallback(async () => {
-    console.log(window.location.search);
     await mutate();
-
-    // Additionally, you can make the API call here if needed
-    // fetch(`your_api_endpoint${queryString}`)
-    //   .then(response => {
-    //     if (!response.ok) {
-    //       throw new Error('Network response was not ok');
-    //     }
-    //     return response.json();
-    //   })
-    //   .then(data => {
-    //     // Handle the API response data here
-    //     console.log(data);
-    //   })
-    //   .catch(error => {
-    //     // Handle errors here
-    //     console.error('There was a problem with the fetch operation:', error);
-    //   });
   }, [mutate]);
+
+  const handlePageChange = useCallback(
+    async (_: React.ChangeEvent<unknown>, page: number) => {
+      if (globalPage === page) {
+        return;
+      }
+      setPage(page);
+      const params = new URLSearchParams(window.location.search);
+      params.set("page", `${page}`);
+      window.location.search = params.toString();
+    },
+    [globalPage, setPage]
+  );
 
   useEffect(() => {
     const parseQueryParams = () => {
@@ -108,7 +108,17 @@ function App() {
     <StyledBox>
       <MainAppBar />
       <GlobalSearch onSearchHotels={handleSearch} />
-      <HotelList isLoading={isLoading} data={data} />
+      <HotelList isLoading={isLoading} hotels={(hotels as Hotel[]) || []} />
+      <StyledStack spacing={2} margin={1} alignItems="center">
+        <Pagination
+          count={10}
+          color="primary"
+          shape="rounded"
+          sx={{ padding: "6px" }}
+          page={globalPage}
+          onChange={handlePageChange}
+        />
+      </StyledStack>
     </StyledBox>
   );
 }
