@@ -25,3 +25,11 @@
   - In the fronted `.env` file, add `REACT_BACKEND_URL="http://localhost:3000"`
   - Finally run `yarn start` in backend & `yarn dev` in frontend
   - Voila, you will be able to run and us the app in the browser.
+
+## Screenshots
+<img width="1430" alt="Screenshot 2024-02-24 at 8 12 20 PM" src="https://github.com/jasimawan/travolta/assets/31315869/08ee673f-a575-4a63-8478-402557e5f4fa">
+<img width="1436" alt="Screenshot 2024-02-24 at 8 11 51 PM" src="https://github.com/jasimawan/travolta/assets/31315869/9bd5cb7c-58af-4c5a-b7c7-781ec54bd3e3"><img width="1431" alt="Screenshot 2024-02-24 at 8 11 58 PM" src="https://github.com/jasimawan/travolta/assets/31315869/fbb43c2c-b38e-44c5-a469-e23ba034909e"><img width="1427" alt="Screenshot 2024-02-24 at 8 12 04 PM" src="https://github.com/jasimawan/travolta/assets/31315869/cc1ea307-faeb-4b6c-b7ee-d4f01ffac6e4">
+
+
+
+
