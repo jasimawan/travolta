@@ -28,10 +28,7 @@ const HotelList = ({
   const { openSnackbar } = useSnackbar();
   const [selectedHotel, setSelectedHotel] = useState<Hotel | undefined>();
   const { mutator } = useFetcher();
-  const { trigger, isMutating } = useSWRMutation(
-    `${process.env.REACT_BACKEND_URL}/hotels`,
-    mutator
-  );
+  const { trigger, isMutating } = useSWRMutation(`/api/hotels`, mutator);
 
   const handleClose = () => {
     setSelectedHotel(undefined);
