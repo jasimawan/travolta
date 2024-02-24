@@ -11,6 +11,8 @@ import useFetcher from "./hooks/useFetcher";
 import Stack from "@mui/material/Stack";
 import Pagination from "@mui/material/Pagination";
 import { usePage } from "./selectors/globalSearchSelectors";
+import isValidDateRange from "./utils/validateDateRange";
+import { useSnackbar } from "./context/SnackbarProvider";
 
 const StyledBox = styled(Box)(() => ({
   height: "100vh",
@@ -25,6 +27,7 @@ const StyledStack = styled(Stack)(({ theme }) => ({
 function App() {
   const { setGlobalSearch } = useGlobalSearchContext();
   const { page: globalPage, setPage } = usePage();
+  const { openSnackbar } = useSnackbar();
   const { fetcher } = useFetcher();
   const {
     isLoading,
@@ -100,6 +103,18 @@ function App() {
       };
       setGlobalSearch(searchData);
 
+      const isValidDate = isValidDateRange(
+        queryParams.checkin,
+        queryParams.checkout
+      );
+
+      console.log(isValidDate);
+
+      if (!isValidDate) {
+        openSnackbar({ message: "Invalid date range.", severity: "error" });
+        return;
+      }
+
       handleSearch();
     }
   }, []);
@@ -109,16 +124,18 @@ function App() {
       <MainAppBar />
       <GlobalSearch onSearchHotels={handleSearch} />
       <HotelList isLoading={isLoading} hotels={(hotels as Hotel[]) || []} />
-      <StyledStack spacing={2} margin={1} alignItems="center">
-        <Pagination
-          count={10}
-          color="primary"
-          shape="rounded"
-          sx={{ padding: "6px" }}
-          page={globalPage}
-          onChange={handlePageChange}
-        />
-      </StyledStack>
+      {hotels && (
+        <StyledStack spacing={2} margin={1} alignItems="center">
+          <Pagination
+            count={10}
+            color="primary"
+            shape="rounded"
+            sx={{ padding: "6px" }}
+            page={globalPage}
+            onChange={handlePageChange}
+          />
+        </StyledStack>
+      )}
     </StyledBox>
   );
 }
