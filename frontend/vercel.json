@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "${REACT_BACKEND_URL}/:path*"
+      "destination": "http://159.89.214.163/api/:path*"
     }
   ]
 }
