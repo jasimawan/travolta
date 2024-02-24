@@ -1,0 +1,9 @@
+{
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "http://209.38.178.166/api",
+      "methods": ["GET", "POST", "PUT", "DELETE"]
+    }
+  ]
+}
