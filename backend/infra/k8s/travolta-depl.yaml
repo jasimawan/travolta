@@ -50,3 +50,16 @@ spec:
       nodePort: 30000
   selector:
     app: travolta
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: travolta-loadbalancer-srv
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 3000
+  selector:
+    app: travolta
