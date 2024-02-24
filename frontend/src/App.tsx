@@ -33,18 +33,14 @@ function App() {
     isLoading,
     mutate,
     data: hotels,
-  } = useSWR(
-    `${process.env.REACT_BACKEND_URL}/hotels/${window.location.search}`,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      refreshWhenHidden: false,
-      refreshWhenOffline: false,
-      revalidateOnMount: false,
-      errorRetryCount: 1,
-    }
-  );
+  } = useSWR(`/api/hotels${window.location.search}`, fetcher, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    refreshWhenHidden: false,
+    refreshWhenOffline: false,
+    revalidateOnMount: false,
+    errorRetryCount: 1,
+  });
 
   const handleSearch = useCallback(async () => {
     await mutate();
