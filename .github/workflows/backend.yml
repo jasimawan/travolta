@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths:
-      - 'backend/**'
+      - "backend/**"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,5 +20,5 @@ jobs:
       - uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-      - run: doctl kubernetes cluster kubeconfig save travolta
+      - run: doctl kubernetes cluster kubeconfig save k8s-1-29-1-do-0-fra1-1708768746400
       - run: kubectl rollout restart deployment travolta-depl
