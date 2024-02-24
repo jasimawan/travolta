@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: travolta-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: travolta
+  template:
+    metadata:
+      labels:
+        app: travolta
+    spec:
+      containers:
+        - name: travolta
+          image: jasimawan/travolta
+          env:
+            - name: HOTELS_API_URL
+              value: https://airbnb13.p.rapidapi.com
+            - name: RAPID_API_KEY
+              value: 27cbd4bae9msha8020da4767c0d5p1e970fjsn68dce74e8b2c
+            - name: RAPID_API_HOST
+              value: airbnb13.p.rapidapi.com
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: travolta-srv
+spec:
+  selector:
+    app: travolta
+  type: ClusterIP
+  ports:
+    - name: travolta
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
